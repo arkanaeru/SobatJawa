@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SobatJawa: Kuis Bahasa Jawa</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/quiz.css">
+    <!-- iconscout -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <!-- font montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-image: url("./images/bg-texture.png");
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Quiz Styles */
+        .quiz-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            background-color: rgb(27, 55, 131);
+            min-height: 100vh;
+        }
+
+        #quiz-container {
+            background-color: rgb(52, 75, 187);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+
+        .answer-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: rgb(255, 255, 255);
+            border: none;
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn.correct {
+            background-color: #4caf50;
+        }
+
+        .btn.wrong {
+            background-color: #f44336;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .score {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container nav_container">
+            <a href="index.html"><h4>SobatJawa</h4></a>
+            <ul class="nav_menu" id="nav_menu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="course.html">Materi</a></li>
+                <li><a href="quiz.html">Kuis</a></li>
+                <li><a href="about.html">Tentang</a></li>
+                <li><a href="contact.html">Kontak</a></li>
+            </ul>
+            <button id="open-menu-btn"><i class="uil uil-bars"></i></button>
+            <button id="close-menu-btn"><i class="uil uil-multiply"></i></button>
+        </div>
+    </nav>
+
+    <!-- Quiz Section -->
+    <section id="quiz-section" class="quiz-section">
+        <div id="quiz-container">
+            <h1 class="quiz-title">Kuis Struktur lan Kaidah Basa Jawa</h1>
+            <br>
+            <div class="question-number" id="question-number">Question 1</div>
+            <div class="question" id="question"></div>
+            <div id="answer-buttons" class="answer-buttons">
+                <!-- Answer buttons will be dynamically added here -->
+            </div>
+            <div class="nav-buttons">
+                <button id="prev-button" class="btn">Kembali</button>
+                <button id="next-button" class="btn">Selanjutnya</button>
+                <button id="finish-button" class="btn" style="display: none;">Selesai</button>
+            </div>
+            <div class="score" id="score"></div>
+        </div>
+    </section>
+    <!-- Quiz Section End -->
+
+    <script src="quiz2.js"></script>
+</body>
+</html>

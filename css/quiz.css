@@ -1,0 +1,35 @@
+/* Add this CSS in quiz.html or your main CSS file */
+
+.btn {
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.correct {
+    animation: correctAnswer 0.5s forwards;
+}
+
+.wrong {
+    animation: wrongAnswer 0.5s forwards;
+}
+
+@keyframes correctAnswer {
+    from {
+        background-color: #007bff;
+    }
+    to {
+        background-color: #4caf50;
+    }
+}
+
+@keyframes wrongAnswer {
+    from {
+        background-color: #007bff;
+    }
+    to {
+        background-color: #f44336;
+    }
+}
