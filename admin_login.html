@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - SobatJawa</title>
+    <link rel="stylesheet" href="./css/login.css">
+    <!-- iconscout -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <!-- font montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Login to SobatJawa</h2>
+        <form action="admin_login.php" method="POST">
+            <label for="id_admin">Admin ID:</label>
+            <input type="text" id="id_admin" name="id_admin" required>
+            <label for="kode_admin">Admin Code:</label>
+            <input type="password" id="kode_admin" name="kode_admin" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Back to <a href="login.html">User Login</a></p>
+    </div>
+</body>
+</html>

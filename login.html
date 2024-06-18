@@ -11,6 +11,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script>
+        function handleRoleChange() {
+            var role = document.getElementById("role").value;
+            if (role === "admin") {
+                window.location.href = "admin_login.html";
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -20,6 +28,11 @@
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
+            <label for="role">Role:</label>
+            <select id="role" name="role" required onchange="handleRoleChange()">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
             <button type="submit">Login</button>
         </form>
         <p>Don't have an account? <a href="register.html">Register</a></p>
