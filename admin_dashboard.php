@@ -1,6 +1,16 @@
 <?php
 session_start();
-include 'config.php'; // Pastikan file ini berisi koneksi ke database
+
+// Koneksi ke database
+$host = "127.0.0.1:3307";
+$user = "root";
+$pass = "";
+$db = "latihan1";
+
+$koneksi = mysqli_connect($host, $user, $pass, $db);
+if (!$koneksi) {
+    die("Tidak bisa terkoneksi ke database");
+}
 
 // Cek apakah admin sudah login
 if (!isset($_SESSION['admin'])) {
@@ -8,67 +18,70 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
+
+
 // Deklarasi variabel
-$id_quiz    = "";
-$id_admin   = "";
-$username   = "";
-$nama       = "";
-$nilai      = "";
-$sukses     = "";
-$error      = "";
+$nama = "";
+$nilai = "";
+$quiz = "";
+$id_quiz = "";
+$sukses = "";
+$error = "";
 
 if (isset($_GET['op'])) {
     $op = $_GET['op'];
 } else {
     $op = "";
 }
+
 if($op == 'delete'){
-    $id_quiz    = $_GET['id_quiz'];
-    $sql1       = "DELETE FROM quiz WHERE id_quiz = '$id_quiz'";
-    $q1         = mysqli_query($conn, $sql1);
+    $nama = $_GET['nama'];
+    $sql1 = "delete from mhs where nama = '$nama'";
+    $q1 = mysqli_query($koneksi, $sql1);
     if($q1){
         $sukses = "Berhasil hapus data";
-    } else {
+    }else{
         $error  = "Gagal melakukan delete data";
     }
 }
-if ($op == 'edit') {
-    $id_quiz    = $_GET['id_quiz'];
-    $sql1       = "SELECT * FROM quiz WHERE id_quiz = '$id_quiz'";
-    $q1         = mysqli_query($conn, $sql1);
-    $r1         = mysqli_fetch_array($q1);
-    $id_admin   = $r1['id_admin'];
-    $username   = $r1['username'];
-    $nama       = $r1['nama'];
-    $nilai      = $r1['nilai'];
 
-    if ($id_quiz == '') {
+if ($op == 'edit') {
+    $nama = $_GET['nama'];
+    $sql1 = "select * from mhs where nama = '$nama'";
+    $q1 = mysqli_query($koneksi, $sql1);
+    $r1 = mysqli_fetch_array($q1);
+    $nama = $r1['nama'];
+    $nilai = $r1['nilai'];
+    $quiz = $r1['quiz'];
+    $id_quiz = $r1['id_quiz'];
+
+    if ($nilai == '') {
         $error = "Data tidak ditemukan";
     }
 }
-if (isset($_POST['simpan'])) {
-    $id_quiz    = $_POST['id_quiz'];
-    $id_admin   = $_POST['id_admin'];
-    $username   = $_POST['username'];
-    $nama       = $_POST['nama'];
-    $nilai      = $_POST['nilai'];
 
-    if ($id_quiz && $id_admin && $username && $nama && $nilai) {
+if (isset($_POST['simpan'])) {
+    $nama = $_POST['nama'];
+    $nilai = $_POST['nilai'];
+    $quiz = $_POST['quiz'];
+    $id_quiz = $_POST['id_quiz'];
+
+    if ($nama && $nilai && $quiz && $id_quiz) {
         if ($op == 'edit') {
-            $sql1       = "UPDATE quiz SET id_admin='$id_admin', username='$username', nama='$nama', nilai='$nilai' WHERE id_quiz = '$id_quiz'";
-            $q1         = mysqli_query($conn, $sql1);
+            $sql1 = "update mhs set nama='$nama', nilai = '$nilai', quiz = '$quiz', id_quiz='$id_quiz' where nama = '$nama'";
+            $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
                 $sukses = "Data berhasil diupdate";
             } else {
-                $error  = "Data gagal diupdate";
+                $error = "Data gagal diupdate";
             }
         } else {
-            $sql1   = "INSERT INTO quiz (id_quiz, id_admin, username, nama, nilai) VALUES ('$id_quiz', '$id_admin','$username','$nama','$nilai')";
-            $q1     = mysqli_query($conn, $sql1);
+            $sql1 = "insert into mhs (nama, nilai, quiz, id_quiz) values ('$nama','$nilai','$quiz','$id_quiz')";
+            $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
-                $sukses     = "Berhasil memasukkan data baru";
+                $sukses = "Berhasil memasukkan data baru";
             } else {
-                $error      = "Gagal memasukkan data";
+                $error = "Gagal memasukkan data";
             }
         }
     } else {
@@ -95,9 +108,12 @@ if (isset($_POST['simpan'])) {
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>Welcome to Admin Dashboard, <?php echo $_SESSION['admin']; ?>!</h2>
+
+        <!-- Bagian Bar Chart -->
         <canvas id="myChart" width="400" height="200"></canvas>
         <script>
             var ctx = document.getElementById('myChart').getContext('2d');
@@ -132,11 +148,8 @@ if (isset($_POST['simpan'])) {
                 }
             });
         </script>
-        <p><a href="logout_adm.php">Logout</a></p>
-    </div>
 
-    <div class="mx-auto">
-        <!-- untuk memasukkan data -->
+        <!-- Bagian CRUD -->
         <div class="card">
             <div class="card-header">
                 DATA REKAPAN PENGGUNA
@@ -144,33 +157,25 @@ if (isset($_POST['simpan'])) {
             <div class="card-body">
                 <?php
                 if ($error) {
-                    echo "<div class='alert alert-danger' role='alert'>$error</div>";
+                ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?php echo $error ?>
+                    </div>
+                <?php
                     header("refresh:5;url=admin_dashboard.php");
                 }
+                ?>
+                <?php
                 if ($sukses) {
-                    echo "<div class='alert alert-success' role='alert'>$sukses</div>";
+                ?>
+                    <div class="alert alert-success" role="alert">
+                        <?php echo $sukses ?>
+                    </div>
+                <?php
                     header("refresh:5;url=admin_dashboard.php");
                 }
                 ?>
                 <form action="" method="POST">
-                    <div class="mb-3 row">
-                        <label for="id_quiz" class="col-sm-2 col-form-label">ID Quiz</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="id_quiz" name="id_quiz" value="<?php echo $id_quiz ?>">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="id_admin" class="col-sm-2 col-form-label">ID Admin</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="id_admin" name="id_admin" value="<?php echo $id_admin ?>">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="username" class="col-sm-2 col-form-label">Username</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="username" name="username" value="<?php echo $username ?>">
-                        </div>
-                    </div>
                     <div class="mb-3 row">
                         <label for="nama" class="col-sm-2 col-form-label">Nama Lengkap</label>
                         <div class="col-sm-10">
@@ -178,9 +183,21 @@ if (isset($_POST['simpan'])) {
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="nilai" class="col-sm-2 col-form-label">Nilai</label>
+                        <label for="nilai" class="col-sm-2 col-form-label">Nilai Siswa</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="nilai" name="nilai" value="<?php echo $nilai ?>">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="quiz" class="col-sm-2 col-form-label">Quiz</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="quiz" name="quiz" value="<?php echo $quiz ?>">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="id_quiz" class="col-sm-2 col-form-label">id_quiz</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="id_quiz" name="id_quiz" value="<?php echo $id_quiz ?>">
                         </div>
                     </div>
                     <div class="col-12">
@@ -190,77 +207,54 @@ if (isset($_POST['simpan'])) {
             </div>
         </div>
 
-        <!-- untuk mengeluarkan data -->
-        <div class="card">
+        <!-- Tabel Data Siswa -->
+        <div class="card mt-4">
             <div class="card-header text-white bg-secondary">
-                Data quiz
+                Data Siswa
             </div>
             <div class="card-body">
                 <table class="table">
                     <thead>
-                    <thead>
-    <tr>
-        <th scope="col">No.</th>
-        <th scope="col">ID Quiz</th>
-        <th scope="col">ID Admin</th>
-        <th scope="col">Username</th>
-        <th scope="col">Nama</th>
-        <th scope="col">Nilai</th>
-        <th scope="col">Aksi</th>
-    </tr>
-</thead>
-<tbody>
-    <?php
-    $sobatjw = "SELECT * FROM quiz ORDER BY id_quiz DESC";
-    $jw   = mysqli_query($conn, $sobatjw);
-    $urut = 1;
-    while ($r2 = mysqli_fetch_array($jw)) {
-        if (isset($r2['id_quiz'])) {
-            $id_quiz    = $r2['id_quiz'];
-        } else {
-            $id_quiz = ''; // atau tindakan lain sesuai kebutuhan
-        }
-    
-        if (isset($r2['id_admin'])) {
-            $id_admin   = $r2['id_admin'];
-        } else {
-            $id_admin = ''; // atau tindakan lain sesuai kebutuhan
-        }
-    
-        if (isset($r2['username'])) {
-            $username   = $r2['username'];
-        } else {
-            $username = ''; // atau tindakan lain sesuai kebutuhan
-        }
-    
-        if (isset($r2['nama'])) {
-            $nama       = $r2['nama'];
-        } else {
-            $nama = ''; // atau tindakan lain sesuai kebutuhan
-        }
-    
-        if (isset($r2['nilai'])) {
-            $nilai      = $r2['nilai'];
-        } else {
-            $nilai = ''; // atau tindakan lain sesuai kebutuhan
-        }
-    
-        // Lanjutkan proses tampilan data di sini
-    }
-    
-    ?>
-        <tr>
-            <th scope="row"><?php echo $urut++ ?></th>
-            <td><?php echo $id_quiz ?></td>
-            <td><?php echo $id_admin ?></td>
-            <td><?php echo $username ?></td>
-            <td><?php echo $nama ?></td>
-            <td><?php echo $nilai ?></td>
-            <td>
-                <a href="admin_dashboard.php?op=edit&id_quiz=<?php echo $id_quiz ?>" class="btn btn-sm btn-warning">Edit</a>
-                <a href="admin_dashboard.php?op=delete&id_quiz=<?php echo $id_quiz ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</a>
-            </td>
-        </tr>
-    <?php
-    ?>
-</tbody>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nama</th>
+                            <th scope="col">Nilai Siswa</th>
+                            <th scope="col">Quiz</th>
+                            <th scope="col">id_quiz</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $sql2 = "select * from mhs order by nama desc";
+                        $q2 = mysqli_query($koneksi, $sql2);
+                        $urut = 1;
+                        while ($r2 = mysqli_fetch_array($q2)) {
+                            $nama = $r2['nama'];
+                            $nilai = $r2['nilai'];
+                            $quiz = $r2['quiz'];
+                            $id_quiz = $r2['id_quiz'];
+                        ?>
+                            <tr>
+                                <th scope="row"><?php echo $urut++ ?></th>
+                                <td><?php echo $nama ?></td>
+                                <td><?php echo $nilai ?></td>
+                                <td><?php echo $quiz ?></td>
+                                <td><?php echo $id_quiz ?></td>
+                                <td>
+                                    <a href="admin_dashboard.php?op=edit&nama=<?php echo $nama ?>"><button type="button" class="btn btn-warning">Edit</button></a>
+                                    <a href="admin_dashboard.php?op=delete&nama=<?php echo $nama ?>" onclick="return confirm('Yakin mau delete data?')"><button type="button" class="btn btn-danger">Delete</button></a>
+                                </td>
+                            </tr>
+                        <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <p><a href="logout_adm.php">Logout</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
